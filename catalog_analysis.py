@@ -80,3 +80,23 @@ while index < len(movies):
     index += 1
 else:
     print("Шедевров не найдено")
+
+def normalize_title(title):
+    words = title.split()
+    normalized_words = []
+    for word in words:
+        if word:  
+            normalized_words.append(word[0].upper() + word[1:])
+    return " ".join(normalized_words)
+
+def make_slug(title):
+    normalized = normalize_title(title)
+    return normalized.lower().replace(" ", "-")
+
+def format_report_line(movie):
+    title = normalize_title(movie["title"])
+    year = movie["year"]
+    rating = movie["rating"]
+    duration = duration_in_hours(movie["duration_min"])
+    genres = ", ".join(sorted(movie["genres"]))
+    return f'"{title}" ({year}) — {rating}/10, {duration}, жанры: {genres}'

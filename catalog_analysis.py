@@ -67,15 +67,17 @@ def count_long_movies(movies, threshold=120):
             count += 1
     return count
 
+print("Фильмы, которые не являются комедиями:")
 for movie in movies:
     if "comedy" in movie["genres"]:
         continue  
     print(movie["title"])
 
+print("\nПервый фильм с рейтингом выше 9.0:")
 index = 0
 while index < len(movies):
     if movies[index]["rating"] > 9.0:
-        print(movies[index]["title"])  
+        print(movies[index]["title"])
         break
     index += 1
 else:
@@ -152,7 +154,33 @@ def iter_high_rated(movies, min_rating=8.0):
         if movie["rating"] >= min_rating:
             yield movie
 
+print("\nФильмы с рейтингом не ниже 8.0:")
 for movie in iter_high_rated(movies):
     print(format_report_line(movie))
 
-sum(m["duration_min"] for m in movies if m["rating"] > 7)
+print("\nСуммарная длительность фильмов с рейтингом > 7:")
+total_duration = sum(m["duration_min"] for m in movies if m["rating"] > 7)
+print(f"{total_duration} мин.")
+
+def build_report(movies):
+    print("\nОТЧЕТ ПО КАТАЛОГУ")
+    
+    print(f"Средний рейтинг: {average_rating(movies)}")
+    
+    _, _, avg_age = catalog_age_stats(movies)
+    print(f"Средний возраст фильмов: {avg_age} лет")
+    
+    print("\nТоп-3 фильма:")
+    top_movies = sorted(movies, key=lambda m: m["rating"], reverse=True)[:3]
+    for movie in top_movies:
+        print(f"  {format_report_line(movie)}")
+        
+    print("\nФильмов по жанрам:")
+    genre_counts = count_by_genre(movies)
+    sorted_genres = sorted(genre_counts.items(), key=lambda item: item[1], reverse=True)
+    for genre, count in sorted_genres:
+        print(f"  {genre} — {count}")
+        
+    print(f"\nВсе жанры каталога: {', '.join(sorted(all_genres(movies)))}")
+
+build_report(movies)
